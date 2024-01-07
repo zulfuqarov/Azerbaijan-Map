@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Image } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
+  Linking,
+  Button,
+} from "react-native";
 import * as Location from "expo-location";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { MosqueApi } from "../../Api/Mosque/Mosque";
+import MapViewDirections from "react-native-maps-directions";
 
 const Mosque = () => {
   const [location, setLocation] = useState(null);
   const [neareMosque, setneareMosque] = useState(null);
   const [errorMsg, setErrorMsg] = useState(true);
+  const [error1, seterror1] = useState(false);
 
   const CheckLocation = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Konum izni verilmedi");
-        return;
+        setErrorMsg(true);
+        setInterval(() => {
+          seterror1(true);
+        }, 5000);
       } else {
         let location = await Location.getCurrentPositionAsync({});
         console.log(location.coords.latitude);
@@ -56,6 +67,19 @@ const Mosque = () => {
     }
 
     return nearestMosque;
+  }
+
+  const openSettings = () => {
+    Linking.openSettings();
+  };
+
+  if (error1) {
+    return (
+      <View>
+        <Text>konum servisleri kapali lutfen aciniz</Text>
+        <Button title="Ayarlar" onPress={openSettings} />
+      </View>
+    );
   }
 
   return (
@@ -109,17 +133,16 @@ const Mosque = () => {
                 />
               </Marker>
             ))}
-          <Polyline
-            coordinates={[
-              {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-              },
-              {
-                latitude: neareMosque.Latitude,
-                longitude: neareMosque.Longitude,
-              },
-            ]}
+          <MapViewDirections
+            origin={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            }}
+            destination={{
+              latitude: neareMosque.Latitude,
+              longitude: neareMosque.Longitude,
+            }}
+            apikey="AIzaSyCuoHJkLMxZ1raU1sSXRgsPnqN776M9wlM"
             strokeWidth={2}
             strokeColor="black"
           />

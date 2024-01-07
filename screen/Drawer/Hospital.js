@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, Image } from "react-native";
 import * as Location from "expo-location";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { HospitalApi } from "../../Api/Hospital/Hospital";
 import MapViewDirections from "react-native-maps-directions";
-import { GOOGLE_MAPS_KEY } from "@env";
 const Hospital = () => {
   const [location, setLocation] = useState(null);
   const [neareHospital, setneareHospital] = useState(null);
@@ -93,7 +92,7 @@ const Hospital = () => {
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: oneHospital.Latitude,   
+                  latitude: oneHospital.Latitude,
                   longitude: oneHospital.Longitude,
                 }}
                 style={{ flex: 1 }}
